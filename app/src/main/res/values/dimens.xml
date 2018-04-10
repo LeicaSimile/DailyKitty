@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="activity_margin">16dp</dimen>
+    <dimen name="main_imgKitty_width">300dp</dimen>
+    <dimen name="main_imgKitty_height">300dp</dimen>
+</resources>
