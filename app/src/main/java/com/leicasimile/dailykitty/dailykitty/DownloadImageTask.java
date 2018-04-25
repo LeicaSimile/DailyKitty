@@ -7,13 +7,14 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 
 // From https://stackoverflow.com/a/9288544
 public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-    ImageView bmImage;
+    private WeakReference<ImageView> bmImage;
 
     public DownloadImageTask(ImageView bmImage) {
-        this.bmImage = bmImage;
+        this.bmImage = new WeakReference<ImageView>(bmImage);
     }
 
     protected Bitmap doInBackground(String... urls) {
@@ -30,6 +31,6 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     }
 
     protected void onPostExecute(Bitmap result) {
-        bmImage.setImageBitmap(result);
+        bmImage.get().setImageBitmap(result);
     }
 }
