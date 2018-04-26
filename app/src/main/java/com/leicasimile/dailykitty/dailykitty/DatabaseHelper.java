@@ -1,6 +1,7 @@
 package com.leicasimile.dailykitty.dailykitty;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -45,6 +46,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    private String sanitize(String s) {
+        return s.replaceAll("[^\\w_]", "");
+    }
+
+    public String getRandomUrl() {
+        String selectQuery = "SELECT url FROM Picture ORDER BY RANDOM() LIMIT 1";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        try {
+            if (cursor.moveToFirst()) {
+                return cursor.getString(cursor.getColumnIndex("url"));
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return "";
+    }
+
+    public String getField(String table, String column, String constraintColumn, String constraintValue) {
+        table = sanitize(table);
+        column = sanitize(column);
+        constraintColumn = sanitize(constraintColumn);
+
+        String selectQuery = String.format("SELECT %s FROM %s WHERE %s=? LIMIT 1", column, table, constraintColumn);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, new String[] {constraintValue});
+
+        try {
+            if (cursor.moveToFirst()) {
+                return cursor.getString(cursor.getColumnIndex(column));
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return "";
+    }
+
     private boolean checkDatabase() {
         File dbFile = new File(DB_PATH + DB_NAME);
         return dbFile.exists();
@@ -87,9 +130,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
-
-    }
+    public void onCreate(SQLiteDatabase db) {}
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
