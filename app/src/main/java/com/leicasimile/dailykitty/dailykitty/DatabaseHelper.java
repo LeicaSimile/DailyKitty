@@ -51,7 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public String getRandomUrl() {
-        String selectQuery = "SELECT url FROM Picture ORDER BY RANDOM() LIMIT 1";
+        String selectQuery = "SELECT url FROM Pictures ORDER BY RANDOM() LIMIT 1";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
